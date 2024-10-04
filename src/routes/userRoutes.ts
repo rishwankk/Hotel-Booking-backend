@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 import {postLogin, postRegister} from "../controllers/user";
 
+
  const router=Router()
 
  

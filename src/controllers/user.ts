@@ -4,6 +4,10 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import { validationResult } from "express-validator";
  export const postRegister = async (req: Request, res: Response) => {
+
+    const { firstName, lastName, email, password } = req.body;
+    console.log(req.body);
+    
     const error=validationResult(req);
     if(!error.isEmpty()){
         return res.status(400).json({errors:error.array()})
@@ -15,7 +19,7 @@ import { validationResult } from "express-validator";
           return res.status(400).json({ message: "User already exist" });
          
         }
-        user = new User(req.body);
+        user = new User({firstName:firstName,lastName:lastName,email:email,password:password});
         await user.save();
         const token=jwt.sign({userId:user.id},process.env.JWT_SECRET_KEY as string,{
             expiresIn:"1d"
@@ -26,7 +30,7 @@ import { validationResult } from "express-validator";
             maxAge:86400000,
 
         })
-        return res.sendStatus(200)
+        return res.status(200).json({ message: "Registration successful" });
     } catch (error) {
         console.log(error);
         
@@ -67,3 +71,6 @@ export const postLogin= async(req:Request,res:Response)=>{
     }
 }
 
+export const vaildateToken=(req:Request,res:Response)=>{
+    res.status(200).send({userId:req.userId})
+}
